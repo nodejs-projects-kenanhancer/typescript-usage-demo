@@ -1,0 +1,35 @@
+{
+  "name": "typescript-usage-demo",
+  "version": "1.0.0",
+  "description": "TypeScript usage with CommonJS(CJS) and ECMAScript Modules(ESM)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch-demo1": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/demo1/app5.ts",
+    "build": "tsc",
+    "build-with-config": "tsc --build tsconfig.json",
+    "prebuild": "npm run lint",
+    "lint": "tslint --fix --format stylish src/**/*.ts",
+    "create-tsconfig": "tsc --init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nodejs-projects-kenanhancer/typescript-usage-demo.git"
+  },
+  "keywords": [],
+  "author": "Kenan Hancer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nodejs-projects-kenanhancer/typescript-usage-demo/issues"
+  },
+  "homepage": "https://github.com/nodejs-projects-kenanhancer/typescript-usage-demo#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "tslint": "^6.1.2",
+    "tslint-config-standard": "^9.0.0",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "@types/node": "^14.0.11"
+  }
+}
