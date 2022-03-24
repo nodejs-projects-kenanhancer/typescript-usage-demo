@@ -6,6 +6,10 @@ type Action =
 
 type ActionType = Action['type'];
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+
+type KeysOfAction = KeysOfUnion<Action>;
+
 type ActionRecord<TAction extends { type: unknown }, TActionType extends TAction['type']> = TAction extends { type: TActionType } ? Omit<TAction, 'type'> : never;
 
 type ActionRecord2<TAction extends { type: unknown }, TActionType extends TAction['type']> = TAction extends { type: TActionType } ? Pick<TAction, keyof Omit<TAction, 'type'>> : never;
@@ -65,6 +69,7 @@ function dispatch(type: any): void {
 
 
 
+
 dispatch('INIT');
 
 dispatch('SYNC');
@@ -72,5 +77,7 @@ dispatch('SYNC');
 dispatch('LOG_IN', { emailAddress: 'kh@kh.com' });
 
 dispatch('LOG_IN_SUCCESS', { accessToken: 'blabla', });
+
+
 
 export { };
