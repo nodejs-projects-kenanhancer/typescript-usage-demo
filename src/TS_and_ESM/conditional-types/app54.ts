@@ -16,7 +16,35 @@ if (isFormat(format)) {
 
 
 {
+    type ASCIICacheKey<Str extends string> = `ID-${Uppercase<Str>}`;
 
+    type MainID = ASCIICacheKey<"my_app">;
+
+
+    type Head<StrT extends string> = StrT extends `${infer HeadT}${string}` ? HeadT : never;
+
+    type Tail<StrT extends string> = StrT extends `${string}${infer TailT}` ? TailT : never;
+
+    type T1 = Head<'kenan'>;
+
+    type T2 = Tail<'kenan'>;
+
+    type TLD = 'com' | 'net' | 'org';
+    type Domain = `${string}.${TLD}`;
+    type Url = `${'http' | 'https'}://${Domain}`;
+
+    const success: Url = 'https://example.com';
+    const fail: Url = 'example.com';
+    const domain: Domain = 'example.com';
+
+
+    type Tuple<TItem, TLength extends number> = [TItem, ...TItem[]] & { length: TLength };
+
+    type T3 = Tuple<string, 3>;
+
+    type T4<T extends string, L extends number> = [T, ...T[]] & { length: L };
+
+    type T5 = T4<'kenand', 5>;
 
 
 }
