@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch-demo1": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/TS_and_ESM/good-usages/app03.ts",
+    "watch-demo1": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/TS_and_ESM/good-usages/app06.ts",
     "build": "tsc",
     "build-with-config": "tsc --build tsconfig.json",
     "prebuild": "npm run lint",
@@ -30,7 +30,7 @@
     "ts-node": "^10.7.0",
     "tslint": "^5.20.1",
     "tslint-config-standard": "^9.0.0",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.4"
   },
   "dependencies": {
     "nut-persister": "^1.0.4",
