@@ -1,19 +1,19 @@
-const formats = ['JSON', 'CSV', 'XML'] as const;
+{
+    const formats = ['JSON', 'CSV', 'XML'] as const;
 
-type Format = typeof formats[number];
+    type Format = typeof formats[number];
 
-function isFormat(x: string): x is Format {
-    // widen formats to string[] so indexOf(x) works
-    return (formats as readonly string[]).includes(x);
+    function isFormat(x: string): x is Format {
+        // widen formats to string[] so indexOf(x) works
+        return (formats as readonly string[]).includes(x);
+    }
+
+    const format: Format = 'CSV';
+
+    if (isFormat(format)) {
+
+    }
 }
-
-const format: Format = 'CSV';
-
-if (isFormat(format)) {
-
-}
-
-
 
 {
     type ASCIICacheKey<Str extends string> = `ID-${Uppercase<Str>}`;
@@ -47,7 +47,19 @@ if (isFormat(format)) {
     type T5 = T4<'kenand', 5>;
 
 
+
 }
 
+{
+    type TruncateToOne<T extends string> = T extends
+        `${infer AA}${infer R}` ?
+        T extends `${infer F}${R}` ? F : never : T;
+
+    const atMostOne = <T extends string>(str: TruncateToOne<T>) => str;
+
+    const test1 = atMostOne('a');
+    // const test2 = atMostOne('ab');
+    // const test3 = atMostOne('abcd');
+}
 
 export { };
