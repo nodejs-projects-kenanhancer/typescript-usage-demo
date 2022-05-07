@@ -22,7 +22,9 @@
     function greet(...arg: any[]): string {
         let [title, firstName, lastName] = arg;
 
-        !lastName && ([title, lastName] = [lastName, title]);
+        !lastName
+            && ([title, lastName] = [lastName = '', title])
+            && ([lastName, firstName] = [firstName, lastName]);
 
         const result = `${title} ${firstName} ${lastName}`.trimStart();
 
@@ -89,6 +91,8 @@
     const a2 = greet('Hello', 'enejda', 'eren', 'enes', 'kenan', false, "en");
 
     const a3 = greet('iyi gunler', 'kenan', 'enejda', true, 'en');
+
+    const a4 = greet('Merhaba', ...['kenan', 'enes'], true, 'tr');
 }
 
 {

@@ -1,3 +1,4 @@
+import { Keys } from "./Keys";
 
 {
     const HTTPRequestMethod = {
@@ -217,36 +218,6 @@
     const a1 = httpRequestMethod;
 
     let a2 = httpRequestMethod;
-}
-
-{
-
-}
-
-{
-    type AppEvent =
-        | { kind: "click"; x: number; y: number }
-        | { kind: "keypress"; key: string; code: number }
-        | { kind: "mouseover"; key: string; code: number }
-        | { kind: "drag"; key: string; code: number }
-        | { kind: "focus"; element: HTMLElement };
-
-    function handleEvent(event: AppEvent) {
-        switch (event.kind) {
-            case "click":
-                // We know it is a mouse click, so we can access `x` and `y` now
-                console.log(`Mouse clicked at (${event.x}, ${event.y})`);
-                break;
-            case "keypress":
-                // We know it is a key press, so we can access `key` and `code` now
-                console.log(`Key pressed: (key=${event.key}, code=${event.code})`);
-                break;
-            case "focus":
-                // We know it is a focus event, so we can access `element`
-                console.log(`Focused element: ${event.element.tagName}`);
-                break;
-        }
-    }
 }
 
 export { };

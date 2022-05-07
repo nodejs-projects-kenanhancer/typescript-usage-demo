@@ -21,9 +21,9 @@
     type MainID = ASCIICacheKey<"my_app">;
 
 
-    type Head<StrT extends string> = StrT extends `${infer HeadT}${string}` ? HeadT : never;
+    type Head<TStr extends string> = TStr extends `${infer THead}${string}` ? THead : never;
 
-    type Tail<StrT extends string> = StrT extends `${string}${infer TailT}` ? TailT : never;
+    type Tail<TStr extends string> = TStr extends `${string}${infer TTail}` ? TTail : never;
 
     type T1 = Head<'kenan'>;
 
