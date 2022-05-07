@@ -55,5 +55,8 @@
     type AppEvents = TupleToUnion<typeof appEventsTuple>;
 }
 
+{
+    type Append<A, B> = A extends [...infer Params] ? [...Params, ...(B extends [...infer Params2] ? Params2 : [])] : never;
+}
 
 export { };
