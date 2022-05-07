@@ -57,6 +57,10 @@
 
 {
     type Append<A, B> = A extends [...infer Params] ? [...Params, ...(B extends [...infer Params2] ? Params2 : [])] : never;
+
+    type NonOptionalKeys<T> = { [k in keyof T]-?: undefined extends T[k] ? never : k }[keyof T];
+    
+    type NonOptionalAndNonNullKeys<T> = { [k in keyof T]-?: undefined extends T[k] ? never : null extends T[k] ? never : k }[keyof T];
 }
 
 export { };

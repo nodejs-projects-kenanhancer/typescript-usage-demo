@@ -1,5 +1,5 @@
 import { Context as AzureContext } from '@azure/functions';
-import { Context as AwsContext, APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
+import { Context as AwsContext, EventBridgeEvent, APIGatewayProxyEvent, APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2, APIGatewayProxyHandlerV2, SQSEvent, SNSEvent, SESEvent, S3Event, S3BatchEvent, SecretsManagerRotationEvent, DynamoDBStreamEvent, MSKEvent, ALBEvent, KinesisStreamEvent } from 'aws-lambda';
 
 type MiddlewareServices<T = {}> = T & {
     elapsedMilliseconds?: number;
@@ -8,6 +8,8 @@ type MiddlewareServices<T = {}> = T & {
 };
 
 type Append<A extends unknown[], B extends unknown[]> = A extends [...infer Params] ? [...Params, ...(B extends [...infer Params2] ? Params2 : [])] : never;
+type NonOptionalKeys<T> = T extends never ? never : { [k in keyof T]-?: undefined extends T[k] ? never : k }[keyof T];
+type ElementOf<T> = T extends (infer E)[] ? E : T;
 
 // Azure Function Middleware
 {
@@ -66,14 +68,23 @@ type Append<A extends unknown[], B extends unknown[]> = A extends [...infer Para
 
 // Aws Lambda Function Middleware
 {
-    type MiddlewareParameters<TEvent = APIGatewayProxyEventV2> = [event: TEvent, context: AwsContext];
+    type AwsEvent<TEvent = never> = APIGatewayProxyEvent | APIGatewayProxyEventV2 | EventBridgeEvent<string, any> | SQSEvent | SNSEvent | SESEvent | S3Event | S3BatchEvent | SecretsManagerRotationEvent | DynamoDBStreamEvent | MSKEvent | ALBEvent | KinesisStreamEvent | TEvent;
 
-    type NextMiddleware<TParameters extends unknown[] = MiddlewareParameters<APIGatewayProxyEventV2>, TResult = APIGatewayProxyStructuredResultV2> = (...args: TParameters) => Promise<TResult>;
+    type MiddlewareParameters<TEvent = AwsEvent> = [event: TEvent, context: AwsContext];
 
-    type Middleware<TParameters extends unknown[] = MiddlewareParameters<APIGatewayProxyEventV2>, TServices = {}, TResult = APIGatewayProxyStructuredResultV2> = (...args: Append<TParameters, [services: MiddlewareServices<TServices>, next: NextMiddleware<TParameters, TResult>]>) => ReturnType<NextMiddleware<TParameters, TResult>>;
+    type NextMiddleware<TParameters extends unknown[] = MiddlewareParameters<AwsEvent>, TResult = APIGatewayProxyStructuredResultV2> = (...args: TParameters) => Promise<TResult>;
+
+    type Middleware<TParameters extends unknown[] = MiddlewareParameters<AwsEvent>, TServices = {}, TResult = APIGatewayProxyStructuredResultV2> = (...args: Append<TParameters, [services: MiddlewareServices<TServices>, next: NextMiddleware<TParameters, TResult>]>) => ReturnType<NextMiddleware<TParameters, TResult>>;
+
+    const isAwsEvent = <TEvent extends AwsEvent>(event: AwsEvent, fieldName: NonOptionalKeys<TEvent>): event is TEvent => fieldName in event;
 
 
-    type NewMiddlewareType = Middleware<[event: APIGatewayProxyEventV2]>;
+    const isAwsEventV2 = <TEvent extends AwsEvent>(event: AwsEvent, fieldName: NonOptionalKeys<TEvent>): event is TEvent => fieldName in event;
+
+    type LL = ElementOf<NonOptionalKeys<APIGatewayProxyEvent>>;
+
+
+    type NewMiddlewareType = Middleware<[event: AwsEvent]>;
 
     const errorMiddleware: NewMiddlewareType = async (event, services, next) => {
 
@@ -87,9 +98,15 @@ type Append<A extends unknown[], B extends unknown[]> = A extends [...infer Para
 
     const jsonParser: NewMiddlewareType = async (event, _, next) => {
 
-        let parsedBody;
-        try { parsedBody = event.body && JSON.parse(event.body); }
-        catch (error: any) { throw new Error('invalid body, expected JSON'); }
+        if (isAwsEvent<APIGatewayProxyEvent>(event, 'path') || isAwsEvent<APIGatewayProxyEventV2>(event, 'rawPath')) {
+            let parsedBody;
+            try { parsedBody = event.body && JSON.parse(event.body); }
+            catch (error: any) { throw new Error('invalid body, expected JSON'); }
+
+            return await next(parsedBody);
+        } else if (isAwsEvent<EventBridgeEvent<string, any>>(event, 'detail-type')) {
+
+        }
 
         return await next(parsedBody);
     };
