@@ -9,7 +9,8 @@ type MiddlewareServices<T = {}> = T & {
 
 type Append<A extends unknown[], B extends unknown[]> = A extends [...infer Params] ? [...Params, ...(B extends [...infer Params2] ? Params2 : [])] : never;
 type NonOptionalKeys<T> = T extends never ? never : { [k in keyof T]-?: undefined extends T[k] ? never : k }[keyof T];
-type ElementOf<T> = T extends (infer E)[] ? E : T;
+
+
 
 // Azure Function Middleware
 {
@@ -22,6 +23,10 @@ type ElementOf<T> = T extends (infer E)[] ? E : T;
 
 
     type NewMiddlewareType = Middleware<[context: AzureContext, inputData: any]>;
+
+    type MiddlewareType<T> = T extends (...args: [...infer I, infer _, infer K]) => any ? K extends (...a: any[]) => any ? I extends Parameters<K> ? T : never : never : never;
+
+
 
     const errorMiddleware: NewMiddlewareType = async (context, inputData, services, next) => {
 
@@ -64,6 +69,15 @@ type ElementOf<T> = T extends (infer E)[] ? E : T;
 
         return { status: 200, body: 'Hello world!' };
     };
+
+    const buildAzureFunction = <T>(handlers: Record<string, MiddlewareType<T>>) => {
+
+    };
+
+    type T1 = MiddlewareType<NewMiddlewareType>;
+    type T2 = MiddlewareType<typeof azureFunctionMiddleware>;
+
+    buildAzureFunction({ errorMiddleware, corsMiddleware, azureTriggerParser, azureFunctionMiddleware })
 }
 
 // Aws Lambda Function Middleware
@@ -78,10 +92,10 @@ type ElementOf<T> = T extends (infer E)[] ? E : T;
 
     const isAwsEvent = <TEvent extends AwsEvent>(event: AwsEvent, fieldName: NonOptionalKeys<TEvent>): event is TEvent => fieldName in event;
 
-
     const isAwsEventV2 = <TEvent extends AwsEvent>(event: AwsEvent, fieldName: NonOptionalKeys<TEvent>): event is TEvent => fieldName in event;
 
-    type LL = ElementOf<NonOptionalKeys<APIGatewayProxyEvent>>;
+
+    type lls = NonOptionalKeys<APIGatewayProxyEvent>;
 
 
     type NewMiddlewareType = Middleware<[event: AwsEvent]>;
