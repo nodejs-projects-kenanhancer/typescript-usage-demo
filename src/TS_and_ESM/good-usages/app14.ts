@@ -50,9 +50,35 @@ type MiddlewareType<T extends (...args: any[]) => any> = T extends (...args: [..
         return await next(event, context);
     };
 
-    const azureTriggerParser: AwsMiddleware = async (event, context, _, next) => {
+    const jsonParser: AwsMiddleware = async (event, context, _, next) => {
 
-        return await next(event, context);
+        let data;
+
+        if (isAwsEvent<APIGatewayProxyEvent>(event, 'path')
+            || isAwsEvent<APIGatewayProxyEventV2>(event, 'rawPath')
+            || isAwsEvent<ALBEvent>(event, 'body')) {
+            let parsedBody;
+            try { parsedBody = event.body && JSON.parse(event.body); }
+            catch (error: any) { throw new Error('invalid body, expected JSON'); }
+
+            data = parsedBody;
+        } else if (isAwsEvent<EventBridgeEvent<string, any>>(event, 'detail-type')) {
+
+            data = event.detail;
+        } else if (isAwsEvent<SQSEvent>(event, 'Records')
+            || isAwsEvent<SNSEvent>(event, 'Records')
+            || isAwsEvent<SESEvent>(event, 'Records')
+            || isAwsEvent<S3Event>(event, 'Records')
+            || isAwsEvent<DynamoDBStreamEvent>(event, 'Records')
+            || isAwsEvent<KinesisStreamEvent>(event, 'Records')) {
+
+            data = event.Records;
+        } else if (isAwsEvent<MSKEvent>(event, 'records')) {
+
+            data = event.records;
+        }
+
+        return await next(data, context);
     };
 
     const authMiddleware: Middleware<AwsMiddlewareParameters, Services> = async (event, context, services, next) => {
@@ -72,12 +98,25 @@ type MiddlewareType<T extends (...args: any[]) => any> = T extends (...args: [..
         return { statusCode: 200, body: `Hello, ${fullName}` };
     };
 
+    const awsLambdaFunctionMiddlewareForSNSEvent: Middleware<[event: SNSEvent]> = async (events) => {
+
+        for (const event of events.Records) {
+            console.log(event.Sns.Message);
+        }
+
+        return { statusCode: 200, body: 'OK' };
+    };
+
     const notifyUser: CustomBusinessMiddleware<{ userName: string; email: string; isAdmin: boolean }> = async function (notifyUserData, context, services) {
 
         console.log(services.validateRequest);
     };
 
-    const notifyCustomer: CustomBusinessMiddleware<any, Services> = async function (_, context, services) {
+    const notifyCustomer: CustomBusinessMiddleware<SESEvent, Services> = async function (events, context, services) {
+
+        for (const record of events.Records) {
+            console.log(record.ses.mail);
+        }
 
         console.log(services.appleBearerToken);
     };
@@ -87,7 +126,7 @@ type MiddlewareType<T extends (...args: any[]) => any> = T extends (...args: [..
     };
 
 
-    const handle = buildAzureFunction({ notifyUser, notifyCustomer }, { errorMiddleware, corsMiddleware, azureTriggerParser, awsLambdaFunctionMiddleware });
+    const handle = buildAzureFunction({ notifyUser, notifyCustomer }, { errorMiddleware, corsMiddleware, jsonParser, awsLambdaFunctionMiddleware });
 }
 
 // Azure Function Middleware
