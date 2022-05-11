@@ -13,7 +13,7 @@ interface Services {
     appleBearerToken: string;
 };
 
-type Append<A extends unknown[], B extends unknown[]> = A extends [...infer Params] ? [...Params, ...(B extends [...infer Params2] ? Params2 : [])] : never;
+type Append<A extends unknown[], B extends unknown[] = []> = A extends [...infer Params] ? B extends [...infer Params2] ? [...Params, ...Params2] : never : never;
 type NonOptionalKeys<T> = T extends never ? never : { [k in keyof T]-?: undefined extends T[k] ? never : k }[keyof T];
 
 type NextMiddleware<TParameters extends unknown[], TResult = any> = (...args: TParameters) => void | Promise<void> | Promise<TResult>;
