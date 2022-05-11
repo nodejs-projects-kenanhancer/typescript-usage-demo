@@ -90,7 +90,7 @@ type NonOptionalKeys<T> = T extends never ? never : { [k in keyof T]-?: undefine
 
     type Middleware<TParameters extends unknown[] = MiddlewareParameters<AwsEvent>, TServices = {}, TResult = APIGatewayProxyStructuredResultV2> = (...args: Append<TParameters, [services: MiddlewareServices<TServices>, next: NextMiddleware<TParameters, TResult>]>) => ReturnType<NextMiddleware<TParameters, TResult>>;
 
-    const isAwsEvent = <TEvent extends AwsEvent>(event: AwsEvent, fieldName: NonOptionalKeys<TEvent>): event is TEvent => fieldName in event;
+    const isAwcsEvent = <TEvent extends AwsEvent>(event: AwsEvent, fieldName: NonOptionalKeys<TEvent>): event is TEvent => fieldName in event;
 
     const isAwsEventV2 = <TEvent extends AwsEvent>(event: AwsEvent, fieldName: NonOptionalKeys<TEvent>): event is TEvent => fieldName in event;
 
