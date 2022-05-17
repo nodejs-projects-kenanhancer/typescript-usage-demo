@@ -32,6 +32,12 @@
         'unfit'
     ];
 
+    type T1 = CompareLength<[firstName: string, age: number], [lastName: string]>;
+
+    type T2 = CompareLength<[firstName: string], [lastName: string, age: number]>;
+
+    const a1: T1 = 'shorterRight';
+
     type Omit2<T, K extends keyof T> = T extends { [Symbol.iterator]: infer U } ? { [Symbol.iterator]: U } & Omit<T, K> : Omit<T, K>;
 
 }
