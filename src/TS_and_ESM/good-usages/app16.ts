@@ -7,10 +7,32 @@
 
     type T1 = Merge<{ firstName: string; lastName: string; } | { age: number }>;
 
+    const a1: T1 = {
+        firstName: '',
+        lastName: '',
+        age: 1
+    };
+
     type T2 = UnionTuple<[{ firstName: string, lastName: string }, { age: number }]>;
+
+    const a2: T2 = {
+        firstName: '',
+        lastName: '',
+    };
+
+    const a3: T2 = {
+        firstName: '',
+        lastName: '',
+        age: 1
+    };
 
     type T3 = MergeTuple<[{ firstName: string, lastName: string }, { age: number }]>;
 
+    const a4: T3 = {
+        firstName: '',
+        lastName: '',
+        age: 1
+    };
 }
 
 {
@@ -48,6 +70,8 @@
     ];
 
     type T1 = CompareLength<[firstName: string, age: number], [lastName: string]>;
+
+    const a1: T1 = 'shorterRight';
 }
 
 {
@@ -58,6 +82,8 @@
         'unfit';
 
     type T1 = CompareLength<[firstName: string, age: number], [lastName: string]>;
+
+    const a1: T1 = 'unfit';
 }
 
 {
@@ -74,12 +100,16 @@
     ];
 
     type T1 = CompareLength<[firstName: string, age: number], [lastName: string]>;
+
+    const a1: T1 = (firstName, age) => { };
 }
 
 {
     type CompareLength<Left extends any[]> = Left extends any[] ? (..._: Left) => any : never;
 
     type T1 = CompareLength<[firstName: string, age: number]>;
+
+    const a1: T1 = (firstName, age) => { };
 }
 
 {
@@ -87,15 +117,23 @@
         Left['length'] extends Right['length'] ? 'equal' :
         Left extends [] ? 'shorterLeft' :
         Right extends [] ? 'shorterRight' :
-        Left extends [any, ...infer L] ? Right extends [any, ...infer R] ? CompareLength<L, R> :
+        Left extends [any, ...infer L] ?
+        Right extends [any, ...infer R] ?
+        CompareLength<L, R> :
         never :
         never;
 
     type T1 = CompareLength<[firstName: string], [lastName: string]>;
 
+    const a1: T1 = 'equal';
+
     type T2 = CompareLength<[firstName: string], [lastName: string, age: number]>;
 
+    const a2: T2 = 'shorterLeft';
+
     type T3 = CompareLength<[firstName: string, age: number], [lastName: string]>;
+
+    const a3: T3 = 'shorterRight';
 }
 
 {
@@ -111,15 +149,23 @@
 
     type T1 = CompareLength<[firstName: string], [lastName: string]>;
 
+    const a1: T1 = 'equal';
+
     type T2 = CompareLength<[firstName: string], [lastName: string, age: number]>;
 
+    const a2: T2 = 'shorterLeft';
+
     type T3 = CompareLength<[firstName: string, age: number], [lastName: string]>;
+
+    const a3: T3 = 'shorterRight';
 }
 
 {
     type CompareLength<Left extends any[]> = Left['at'];
 
     type T1 = CompareLength<[firstName: string]>;
+
+    const a1: T1 = (index) => ""
 }
 
 export { };
