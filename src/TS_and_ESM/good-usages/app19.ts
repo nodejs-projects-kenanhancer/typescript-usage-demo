@@ -1,6 +1,6 @@
 import { AwsDefaultMiddleware, isAwsEvent } from 'nut-pipe';
 
-type MiddlewareServices<T = {}> = T & {
+type MiddlewareServices = {
     elapsedMilliseconds?: number;
     validateRequest?: boolean;
     validateResponse?: boolean;

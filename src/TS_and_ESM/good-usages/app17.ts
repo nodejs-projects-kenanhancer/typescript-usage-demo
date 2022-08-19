@@ -1,6 +1,6 @@
 import { AzureDefaultMiddleware } from 'nut-pipe';
 
-type MiddlewareServices<T = {}> = T & {
+type MiddlewareServices = {
     elapsedMilliseconds?: number;
     validateRequest?: boolean;
     validateResponse?: boolean;
@@ -18,7 +18,7 @@ type MiddlewareServices<T = {}> = T & {
         return await next(context, event);
     };
 
-    const logMiddleware: AzureDefaultMiddleware<[], MiddlewareServices> = async (context, event, services, next) => {
+    const logMiddleware: AzureDefaultMiddleware<any, [], MiddlewareServices> = async (context, event, services, next) => {
 
         console.log(services.elapsedMilliseconds);
 
