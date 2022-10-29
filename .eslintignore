@@ -1,0 +1,13 @@
+# /node_modules/* and /bower_components/* in the project root are ignored by default
+
+**/node_modules/*
+**/coverage/*
+webpack.config.js
+scripts/switch-node-version.js
+jira-prepare-commit-msg.config.js
+**/.compiled/**
+.vscode/**
+
+# Ignore built files except build/index.js
+build/*
+!build/index.js
