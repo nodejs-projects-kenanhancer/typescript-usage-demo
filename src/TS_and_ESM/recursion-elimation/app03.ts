@@ -1,11 +1,3 @@
-export type ProjectDetailsEditState = {
-  loading: boolean;
-  editState?: boolean;
-  isProjectNameUnique: boolean;
-  projectDetailsEditModal: boolean;
-  tagFieldValue: string;
-};
-
 export type CamelToSnake<
   T extends string,
   P extends string = ""
@@ -31,6 +23,14 @@ type ToAction<T> = {
     value: T[Extract<P, string>];
   };
 }[keyof T];
+
+type ProjectDetailsEditState = {
+  loading: boolean;
+  editState?: boolean;
+  isProjectNameUnique: boolean;
+  projectDetailsEditModal: boolean;
+  tagFieldValue: string;
+};
 
 type T3 = ToAction<ProjectDetailsEditState>;
 
