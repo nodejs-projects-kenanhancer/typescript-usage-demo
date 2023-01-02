@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --no-cache ",
     "test:coverage": "jest --no-cache --coverage",
-    "watch-demo1": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/TS_and_ESM/conditional-types/app55.ts",
+    "watch-demo1": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/TS_and_ESM/demo1/app24-4.ts",
     "build": "tsc",
     "build-with-config": "tsc --build tsconfig.json",
     "prebuild": "npm run lint",
