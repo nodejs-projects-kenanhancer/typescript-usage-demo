@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-type ClassType<T = any> = new (...args: any[]) => T;
+export type ClassType<T = any> = new (...args: any[]) => T;
 
 class DependencyMetadata {
   constructor(
@@ -67,7 +67,7 @@ class IocContainerDefaultBuilder<TExtends = never>
 
 class IocContainer<TExtends = never> implements IIocContainer<TExtends> {
   constructor(
-    private readonly dependencyMetadataContainer: Map<
+    public readonly dependencyMetadataContainer: Map<
       string,
       DependencyMetadata
     >,
@@ -108,9 +108,9 @@ class IocContainerFactory {
   }
 }
 
-const iocContainer = IocContainerFactory.getContainer();
+export const iocContainer = IocContainerFactory.getContainer();
 
-function Dependency<T extends ClassType>(constructor: T) {
+export function Dependency<T extends ClassType>(constructor: T) {
   const constructorParamTypes = Reflect.getMetadata(
     "design:paramtypes",
     constructor
@@ -129,54 +129,3 @@ function Dependency<T extends ClassType>(constructor: T) {
     }
   };
 }
-
-abstract class IHelper {
-  abstract getFullName(firstName: string, lastName: string): string;
-}
-
-@Dependency
-class Helper extends IHelper {
-  constructor() {
-    super();
-    console.log();
-  }
-
-  getFullName(firstName: string, lastName: string) {
-    return `${firstName} ${lastName}`;
-  }
-}
-
-abstract class IGreetingService {
-  abstract sayHello(firstName: string, lastName: string): string;
-  abstract sayGoodbye(firstName: string, lastName: string): string;
-}
-
-@Dependency
-class GreetingService extends IGreetingService {
-  constructor(private readonly helper: IHelper) {
-    super();
-    console.log();
-  }
-
-  sayHello(firstName: string, lastName: string) {
-    const fullName = this.helper.getFullName(firstName, lastName);
-
-    return `Hello ${fullName}`;
-  }
-
-  sayGoodbye(firstName: string, lastName: string) {
-    const fullName = this.helper.getFullName(firstName, lastName);
-
-    return `Goodbye, ${fullName}`;
-  }
-}
-
-iocContainer.register("Helper", Helper);
-
-iocContainer.register("Helper2", Helper);
-
-const a1 = iocContainer.register("Helper", Helper).register("Helper2", Helper);
-
-const a2 = { Helper, GreetingService };
-
-export {};
