@@ -7,7 +7,7 @@
     "test": "jest --no-cache ",
     "test:coverage": "jest --no-cache --coverage",
     "start": "node dist/TS_and_ESM/ioc-container-demo3/index.js",
-    "watch-demo1": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/TS_and_ESM/ioc-container-demo4/index.ts",
+    "watch-demo1": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/TS_and_ESM/ioc-container-demo5/index.ts",
     "build": "tsc",
     "build-with-config": "tsc --build tsconfig.json",
     "lint": "eslint --ext .js,.ts .",
