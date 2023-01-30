@@ -1,12 +1,12 @@
 const addAward = {
-  path: `/project-v2/:projectId/award/:opportunityId/:opportunityLotId/add/:awardType` as const,
+  path: `/project-v2/:projectId/award/:opportunityId/:opportunityLotId/add/:awardType`,
   title: "Add an award",
-};
+} as const;
 
 const editAward = {
   path: `/project-v2/:projectId/award/:opportunityId/:opportunityLotId/edit/:awardType`,
   title: "Edit an award",
-};
+} as const;
 
 type ExtractParam<Path> = Path extends `:${infer A}` ? A : never;
 
