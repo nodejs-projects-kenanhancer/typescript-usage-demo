@@ -76,8 +76,6 @@ type T6 = CamelToSnake<"Project inbox">;
 
 type T7 = CamelToSnake<"Project Inbox">;
 
-type T8 = typeof projectDashboardV2Routes[number];
-
 type GenerateRoute<T extends { path: string; title: string }> = T extends {
   path: infer TP extends string;
   title: infer TT extends string;
