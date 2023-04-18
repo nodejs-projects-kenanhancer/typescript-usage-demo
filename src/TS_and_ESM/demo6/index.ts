@@ -18,6 +18,13 @@ const projectDashboardV2AwardsRoute = [
     isPrivate: true,
     inSideBar: true,
   },
+  {
+    path: "/project-v2/:projectId/meatV3/:opportunityLotId/:opportunityId",
+    title: "MEAT Simulation V3",
+    exact: true,
+    isPrivate: true,
+    inSideBar: true,
+  },
 ] as const;
 
 const projectDashboardV2Routes = [
@@ -62,8 +69,7 @@ type CamelToSnake<T extends string> = string extends T
     >}${CamelToSnake<R>}`
   : "";
 
-type T3 =
-  RouteParams<"/project-v2/:projectId/award/:opportunityId/:opportunityLotId/add/:awardType">;
+type T3 = RouteParams<"/project-v2/:projectId/award/:opportunityId/:opportunityLotId/add/:awardType">;
 
 const a1: T3 = {
   awardType: "",
@@ -110,7 +116,7 @@ const ll: T10 = {
 
 type T12 = T11<typeof projectDashboardV2AwardsRoute[number]>;
 
-const route = <
+const goto = <
   T extends keyof T10,
   K extends RouteParams<T10[T]>,
   L extends T10[T]
@@ -119,13 +125,29 @@ const route = <
   value: K
 ) => {};
 
-route("ADD_AN_AWARD", {
+goto("ADD_AN_AWARD", {
   awardType: "",
   opportunityId: "",
   opportunityLotId: "",
   projectId: "",
 });
 
-route("PROJECT_OVERVIEW", { projectId: "" });
+goto("PROJECT_OVERVIEW", { projectId: "" });// abstraction
+
+goto("ADD_AN_AWARD", {
+  awardType: "",
+  opportunityId: "",
+  opportunityLotId: "",
+  projectId: "",
+});
+
+goto("MEAT_SIMULATION_V3", {
+  opportunityId: "",
+  opportunityLotId: "",
+  projectId: "",
+});
+
+const [state, setState] = useState();
+const [state, setState] = useReducer();
 
 export {};
