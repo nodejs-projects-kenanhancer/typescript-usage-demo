@@ -26,7 +26,7 @@
     For example:
   */
   function fnBad<const T extends string[]>(args: T): T {
-    return args;    
+    return args;
   }
 
   // 'T' is still 'string[]' since 'readonly ["a", "b", "c"]' is not assignable to 'string[]'
@@ -85,6 +85,28 @@
     lastName: "Hancer",
     hobbies: ["Cinema", "Music", "Coloring"],
   });
+}
+
+{
+  type Person = {
+    firstName: string;
+    lastName: string;
+    hobbies: readonly string[];
+  };
+
+  type ArrayTypeFields<T> = {
+    [K in keyof T]: T[K] extends ReadonlyArray<any> ? K : never;
+  }[keyof T];
+
+  type FilterType<Type, FieldType> = {
+    [index in keyof Type]: Type[index] extends FieldType ? index : never;
+  }[keyof Type];
+
+  type SubType<Type, FieldType> = Pick<Type, FilterType<Type, FieldType>>;
+
+  type ArrayFieldsFromPerson1 = Pick<Person, ArrayTypeFields<Person>>;
+
+  type ArrayFieldsFromPerson2 = SubType<Person, ReadonlyArray<any>>;
 }
 
 export {};
