@@ -1,11 +1,16 @@
 {
-  type HasNames = { readonly names: string[] };
+  type HasNames = { names: readonly string[] };
   function getNamesExactly<T extends HasNames>(arg: T): T["names"] {
     return arg.names;
   }
 
   // Inferred type: string[]
   const names = getNamesExactly({ names: ["Alice", "Bob", "Eve"] });
+
+  // Inferred type: readonly ["Alice", "Bob", "Eve"]
+  const namesInferred = getNamesExactly({
+    names: ["Alice", "Bob", "Eve"],
+  } as const);
 }
 
 {
@@ -17,6 +22,50 @@
   // Inferred type: readonly ["Alice", "Bob", "Eve"]
   // Note: Didn't need to write 'as const' here
   const names = getNamesExactly({ names: ["Alice", "Bob", "Eve"] });
+}
+
+{
+  type Colors = "red" | "green" | "blue";
+  type RGB = [red: number, green: number, blue: number];
+
+  const palette = {
+    red: [255, 0, 0],
+    green: "#00ff00",
+    blue: [0, 0, 255],
+  } satisfies Record<Colors, string | RGB>;
+
+  const palette3 = {
+    red: "red",
+    green: "#00ff00",
+    blue: [0, 0, 255],
+  } satisfies Record<Colors, string | RGB>;
+
+  const palette2 = {
+    red: [255, 0, 0],
+    green: "#00ff00",
+    blue: [0, 0, 255],
+  } as const;
+
+  const palette4 = {
+    red: [255, 0, 0],
+    green: "#00ff00",
+    blue: [0, 0, 255],
+    pink: "",
+  } satisfies Record<Colors, string | RGB>;
+
+  const palette5 = {
+    red: [255, 0, 0],
+    green: "#00ff00",
+    blue: [0, 0],
+  } satisfies Record<Colors, string | RGB>;
+
+  let palette6 = {
+    red: [255, 0, 0],
+    green: "#00ff00",
+    blue: [0, 0],
+  } as const;
+
+  palette6.green = '';
 }
 
 {
@@ -80,7 +129,7 @@
   }
 
   // Inferred type: readonly ["Cinema", "Music", "Coloring"]
-  const names = getHobbies({
+  const hobbies = getHobbies({
     firstName: "Kenan",
     lastName: "Hancer",
     hobbies: ["Cinema", "Music", "Coloring"],
@@ -92,6 +141,7 @@
     firstName: string;
     lastName: string;
     hobbies: readonly string[];
+    age: number;
   };
 
   type ArrayTypeFields<T> = {
@@ -106,7 +156,25 @@
 
   type ArrayFieldsFromPerson1 = Pick<Person, ArrayTypeFields<Person>>;
 
-  type ArrayFieldsFromPerson2 = SubType<Person, ReadonlyArray<any>>;
+  type ArrayFieldsFromPerson2 = SubType<Person, ReadonlyArray<any> | number>;
+}
+
+{
+  type Person = {
+    firstName: string;
+    lastName: string;
+    hobbies: string[];
+    age: number;
+  };
+
+  type FieldsOfType<T, U> = {
+    [K in keyof T]: T[K] extends U ? K : never;
+  }[keyof T];
+
+  type StringArrayFieldsFromPerson = Pick<
+    Person,
+    FieldsOfType<Person, string[] | number>
+  >;
 }
 
 export {};
